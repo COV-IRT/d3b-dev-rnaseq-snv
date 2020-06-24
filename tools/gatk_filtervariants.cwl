@@ -8,7 +8,7 @@ requirements:
     ramMin: 8000
     coresMin: 4
   - class: DockerRequirement
-    dockerPull: 'kfdrc/gatk:4.1.1.0'
+    dockerPull: 'kfdrc/gatk:4.1.7.0R'
 baseCommand: [/gatk, VariantFiltration]
 arguments:
   - position: 1

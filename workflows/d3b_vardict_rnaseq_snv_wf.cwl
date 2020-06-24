@@ -3,7 +3,7 @@ class: Workflow
 doc: |-
     VarDict Java RNAseq SNV Calling Workflow
 
-    This [workflow](https://github.com/bcbio/bcbio-nextgen/blob/master/bcbio/rnaseq/variation.py) is based on the Vardict run style of BC Bio.
+    This [workflow](https://github.com/bcbio/bcbio-nextgen/blob/master/bcbio/rnaseq/variation.py) is based on the Vardict run style of BC Bio, compatible with all releases as of 2020-Jun-17.
     `workflows/d3b_vardict_rnaseq_snv_wf.cwl` is the wrapper cwl that runs this workflow.
     Tweaking `vardict_bp_target` and `vardict_intvl_target_size` maybe be needed to improve run time in high coverage areas, by reducing their values from defaults.
 

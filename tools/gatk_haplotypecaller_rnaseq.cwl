@@ -8,7 +8,7 @@ requirements:
     ramMin: 8000
     coresMin: 4
   - class: DockerRequirement
-    dockerPull: 'kfdrc/gatk:4.1.1.0'
+    dockerPull: 'kfdrc/gatk:4.1.7.0R'
 baseCommand: [/gatk, HaplotypeCaller]
 arguments:
   - position: 1
@@ -17,6 +17,7 @@ arguments:
       -R $(inputs.reference_fasta.path)
       -I $(inputs.bqsr_bam.path)
       --standard-min-confidence-threshold-for-calling 20
+      -dont-use-soft-clipped-bases
       ${
         if (inputs.genes_bed != null){
           return "-L " + inputs.genes_bed.path;
@@ -29,7 +30,7 @@ arguments:
       --dbsnp $(inputs.dbsnp.path)
 inputs:
   reference_fasta: {type: File, secondaryFiles: ['.fai', '^.dict']}
-  bqsr_bam: {type: File, secondaryFiles: ['.bai']}
+  bqsr_bam: {type: File, secondaryFiles: ['^.bai']}
   genes_bed: {type: File?}
   dbsnp: {type: File, secondaryFiles: ['.idx'], doc: "dbSNP reference"}
   output_basename: string

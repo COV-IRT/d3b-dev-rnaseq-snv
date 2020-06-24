@@ -9,6 +9,9 @@ requirements:
     coresMin: $(inputs.cores)
   - class: DockerRequirement
     dockerPull: 'kfdrc/strelka2:2.9.10'
+  - class: InitialWorkDirRequirement
+    listing: [$(inputs.input_rna_bam),$(inputs.input_rna_bai)]
+
 
 baseCommand: [/strelka-2.9.10.centos6_x86_64/bin/configureStrelkaGermlineWorkflow.py]
 arguments:
@@ -38,7 +41,8 @@ arguments:
 
 inputs:
   reference: { type: File, secondaryFiles: [.fai] }
-  input_rna_bam: {type: File, secondaryFiles: [^.bai]}
+  input_rna_bam: {type: File}
+  input_rna_bai: {type: File}
   strelka2_bed: {type: File?, secondaryFiles: [.tbi], label: gzipped bed file}
   cores: {type: ['null', int], default: 16, doc: "Num cores to use"}
   ram: {type: ['null', int], default: 30, doc: "Max mem to use in GB"}

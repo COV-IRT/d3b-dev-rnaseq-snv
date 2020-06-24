@@ -5,16 +5,17 @@ requirements:
   - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement
   - class: DockerRequirement
-    dockerPull: 'kfdrc/gatk:4.1.1.0'
+    dockerPull: 'kfdrc/gatk:4.1.7.0R'
   - class: ResourceRequirement
-    ramMin: 4000
-    coresMin: 2
+    ramMin: 8000
+    coresMin: 8
 baseCommand: [/gatk, ApplyBQSR]
 arguments:
   - position: 1
     shellQuote: false
     valueFrom: >-
       --java-options "-Xms3000m
+      -Xmx7500m
       -XX:+PrintFlagsFinal
       -XX:+PrintGCTimeStamps
       -XX:+PrintGCDateStamps
@@ -40,7 +41,7 @@ arguments:
       
 inputs:
   reference: {type: File, secondaryFiles: [^.dict, .fai]}
-  input_bam: {type: File, secondaryFiles: [.bai]}
+  input_bam: {type: File, secondaryFiles: [^.bai]}
   bqsr_report: File
   sequence_interval: File?
 outputs:

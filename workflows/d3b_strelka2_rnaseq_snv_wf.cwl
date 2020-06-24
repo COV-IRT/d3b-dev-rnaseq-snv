@@ -4,7 +4,7 @@ doc: |-
     Strelka2 SNV Calling Workflow
     
     This [workflow](https://github.com/Illumina/strelka/blob/v2.9.x/docs/userGuide/README.md#rna-seq) is pretty straight forward, with a `PASS` filter step added to get `PASS` calls.
-    The git repo serving this app and related tools can be found [here](https://github.com/d3b-center/d3b-dev-rnaseq-snv).
+    The git repo serving this app and related tools can be found [here](https://github.com/d3b-center/d3b-dev-rnaseq-snv), compatible with all releases as of 2020-Jun-17.
     `workflows/d3b_strelka2_rnaseq_snv_wf.cwl` is the wrapper cwl that runs this workflow
 
     ### Inputs
@@ -39,7 +39,8 @@ requirements:
 
 inputs:
   output_basename: string
-  STAR_sorted_genomic_bam: {type: File, doc: "STAR sorted alignment bam", secondaryFiles: ['^.bai']}
+  STAR_sorted_genomic_bam: {type: File, doc: "STAR sorted alignment bam"}
+  STAR_sorted_genomic_bai: {type: File, doc: "STAR sorted alignment bam index"}
   reference_fasta: {type: File, secondaryFiles: ['.fai'], doc: "Reference genome used"}
   tool_name: {type: string, doc: "description of tool that generated data, i.e. gatk_haplotypecaller"}
   mode: {type: ['null', {type: enum, name: select_vars_mode, symbols: ["gatk", "grep"]}], doc: "Choose 'gatk' for SelectVariants tool, or 'grep' for grep expression", default: "gatk"}
@@ -55,6 +56,7 @@ steps:
     in:
       reference: reference_fasta
       input_rna_bam: STAR_sorted_genomic_bam
+      input_rna_bai: STAR_sorted_genomic_bai
       # strelka2_bed: {type: File?, secondaryFiles: [.tbi], label: gzipped bed file}
       output_basename: output_basename
     out: [output_vcf]
@@ -67,4 +69,5 @@ steps:
       output_basename: output_basename
       tool_name: tool_name
       mode: mode
+      init_bam_index_style: string
     out: [pass_vcf]

@@ -5,21 +5,21 @@ requirements:
   - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
-    ramMin: 8000
-    coresMin: 4
+    ramMin: 32000
+    coresMin: 8
   - class: DockerRequirement
-    dockerPull: 'kfdrc/gatk:4.1.1.0'
+    dockerPull: 'kfdrc/gatk:4.1.7.0R'
 baseCommand: [/gatk, SplitNCigarReads]
 arguments:
   - position: 1
     shellQuote: false
     valueFrom: >-
-      --java-options "-Xmx7500m
+      --java-options "-Xmx30G
       -XX:+PrintFlagsFinal
       -Xloggc:gc_log.log
       -XX:GCTimeLimit=50
       -XX:GCHeapFreeLimit=10"
-      --max-reads-in-memory 300000
+      --seconds-between-progress-updates 30
       -R $(inputs.reference_fasta.path)
       -I $(inputs.dup_marked_bam.path)
       ${
@@ -36,13 +36,13 @@ arguments:
               return "-O " + inputs.output_basename + ".sorted.dup_marked.splitn.bam";
           }
           else{
-              return "-O " + inputs.interval_bed.narmroot + ".sorted.dup_marked.splitn.bam";
+              return "-O " + inputs.dup_marked_bam.nameroot + ".splitn.bam";
           }
       }
       
 inputs:
   reference_fasta: {type: File, secondaryFiles: ['.fai', '^.dict']}
-  dup_marked_bam: {type: File, secondaryFiles: ['.bai', '^.bai']}
+  dup_marked_bam: {type: File, secondaryFiles: ['^.bai']}
   interval_bed: {type: File?}
   output_basename: {type: string?, doc: "Can leave blank if using an inerval file"}
 outputs:
@@ -50,4 +50,4 @@ outputs:
     type: File
     outputBinding:
       glob: '*.bam'
-    secondaryFiles: ['.bai']
+    secondaryFiles: ['^.bai']

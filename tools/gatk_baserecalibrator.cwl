@@ -5,7 +5,7 @@ requirements:
   - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement
   - class: DockerRequirement
-    dockerPull: 'kfdrc/gatk:4.1.1.0'
+    dockerPull: 'kfdrc/gatk:4.1.7.0R'
   - class: ResourceRequirement
     ramMin: 8000
     coresMin: 4
@@ -37,7 +37,7 @@ arguments:
 
 inputs:
   reference: {type: File, secondaryFiles: [^.dict, .fai]}
-  input_bam: {type: File, secondaryFiles: [.bai]}
+  input_bam: {type: File, secondaryFiles: [^.bai]}
   knownsites:
     type:
       type: array

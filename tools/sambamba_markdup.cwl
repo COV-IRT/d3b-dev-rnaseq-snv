@@ -20,12 +20,12 @@ arguments:
       mkdir TMP
 
       sambamba markdup
-      -t 4
-      --sort-buffer-size 7500
-      --show-progress
       --tmpdir TMP
+      -t 4
       $(inputs.input_bam.path)
       $(inputs.input_bam.nameroot).md.bam
+
+      mv $(inputs.input_bam.nameroot).md.bam.bai $(inputs.input_bam.nameroot).md.bai
 
 inputs:
   input_bam: File
