@@ -1,7 +1,7 @@
 cwlVersion: v1.0
 class: CommandLineTool
 id: vep-1oo-annotate
-doc: "VEP Release 100. Basic tool with no customization"
+doc: "VEP Release 100. Basic annotation tool, can use cache or vcf"
 requirements:
   - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement
@@ -17,24 +17,20 @@ arguments:
     valueFrom: >-
       set -eo pipefail
 
-      tar -xzf
-      $(inputs.cache.path)
-      && perl /ensembl-vep/vep
-      --cache --dir_cache $PWD
-      --cache_version 100
-      --vcf
-      --symbol
       ${
-        if (inputs.merged_cache){
-          return " --merged ";
-        }
+        if (inputs.cache){
+          var cmd = "tar -xzf " + inputs.cache.path + ";";
+          return cmd;
+          }
         else{
-          return " ";
-        }
+          return "echo No cache skipping unzip;";
+          }
       }
+      
+      perl /ensembl-vep/vep
+      --vcf
       --canonical
       --variant_class
-      --offline
       --ccds
       --uniprot
       --protein
@@ -43,6 +39,7 @@ arguments:
       --hgvsg
       --fork 14
       --sift b
+      --symbol
       --vcf_info_field ANN
       -i $(inputs.input_vcf.path)
       -o STDOUT
@@ -52,8 +49,22 @@ arguments:
       --allele_number
       --dont_skip
       --allow_non_variant
-      --fasta $(inputs.reference.path) |
-      /ensembl-vep/htslib/bgzip -@ 14 -c > $(inputs.output_basename).$(inputs.tool_name).vep.vcf.gz
+      --fasta $(inputs.reference.path)
+      ${
+        var args = "";
+        if (inputs.cache){
+          args = " --cache --dir_cache $PWD --cache_version 100 --offline ";
+          if (inputs.merged_cache){
+            args += " --merged ";
+          }
+        }
+        else{
+          args = " --gtf " + inputs.bgzipped_gtf.path;
+        }
+        return args;
+      }
+      |
+      /ensembl-vep/htslib/bgzip -@ 2 -c > $(inputs.output_basename).$(inputs.tool_name).vep.vcf.gz
       && /ensembl-vep/htslib/tabix $(inputs.output_basename).$(inputs.tool_name).vep.vcf.gz
 
 inputs:
@@ -62,9 +73,10 @@ inputs:
     type: File
     secondaryFiles: [.tbi]
   output_basename: string
-  merged_cache: {type: boolean, doc: "If merged cache being used", default: true}
+  merged_cache: {type: boolean?, doc: "If merged cache being used", default: true}
   tool_name: {type: string, doc: "Name of tool used to generate calls"}
-  cache: {type: File, label: tar gzipped cache from ensembl/local converted cache}
+  cache: {type: File?, label: tar gzipped cache from ensembl/local converted cache, doc: "Use this if not using a gtf for gene models"}
+  bgzipped_gtf: {type: File?, doc: "If merged cache being used", secondaryFiles: ['.tbi'], doc: "Use this if not using a cahce, but using gtf instead for gene models"}
 
 outputs:
   output_vcf:
