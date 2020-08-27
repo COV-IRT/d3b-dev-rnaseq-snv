@@ -19,7 +19,7 @@ doc: |-
       call_bed_file: {type: File, doc: "BED or GTF intervals to make calls"}
       exome_flag: {type: string?, default: "Y", doc: "Whether to run in exome mode for callers. Should be Y or leave blank as default is Y. Only make N if you are certain"}
       knownsites: {type: 'File[]', doc: "Population vcfs, based on Broad best practices"}
-      dbsnp_vcf: {type: File, secondaryFiles: ['.idx']}
+      dbsnp_vcf: {type: File, secondaryFiles: ['.tbi']}
       tool_name: {type: string, doc: "description of tool that generated data, i.e. gatk_haplotypecaller"}
       mode: {type: ['null', {type: enum, name: select_vars_mode, symbols: ["gatk", "grep"]}], doc: "Choose 'gatk' for SelectVariants tool, or 'grep' for grep expression", default: "gatk"}
     ```
@@ -56,7 +56,7 @@ inputs:
   call_bed_file: {type: File, doc: "BED or GTF intervals to make calls"}
   exome_flag: {type: string?, default: "Y", doc: "Whether to run in exome mode for callers. Should be Y or leave blank as default is Y. Only make N if you are certain"}
   knownsites: {type: 'File[]', doc: "Population vcfs, based on Broad best practices"}
-  dbsnp_vcf: {type: File, secondaryFiles: ['.idx']}
+  dbsnp_vcf: {type: File, secondaryFiles: ['.tbi']}
   tool_name: {type: string, doc: "description of tool that generated data, i.e. gatk_haplotypecaller"}
   mode: {type: ['null', {type: enum, name: select_vars_mode, symbols: ["gatk", "grep"]}], doc: "Choose 'gatk' for SelectVariants tool, or 'grep' for grep expression", default: "gatk"}
 
@@ -125,7 +125,7 @@ steps:
     out: [hc_called_vcf]
   merge_hc_vcf:
     run: ../tools/gatk_mergevcfs.cwl
-    label: "GAK Merge HC VCF"
+    label: "GATK Merge HC VCF"
     in:
       input_vcfs: gatk_haplotype_rnaseq/hc_called_vcf
       reference_dict: reference_dict
