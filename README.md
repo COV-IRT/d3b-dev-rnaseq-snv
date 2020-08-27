@@ -159,6 +159,31 @@ mv STAR-Fusion_outdir/star-fusion.fusion_predictions.abridged.coding_effect.tsv 
 gzip -c /sbgenomics/Projects/7c22397d-ea11-4069-9687-3049119a2d37/NASA_HEC_transferred_data/COVIRT_all_data_20200729/02-AlignedData/COVSUBJ_0166_1_N_HA_all-reads/COVSUBJ_0166_1_N_HA_all-reads_Chimeric.out.junction > COVSUBJ_0166_1_N_HA_all-reads_Chimeric.out.junction.gz
 ```
 
+### Star Fusion reference genome genereate
+This tool generates a custom reference for STAR-Fusion, especially useful when pre-existing genomes don't match alignment.
+`tools/star_fusion_refgen.cwl` is the tool used to generate SATR-Fusion references.
+This tool takes 1 day (not a typo) to run, and costs $8.61 on Cavatica
+
+```yaml
+inputs:
+  reference_genome: File
+  gtf: File
+  max_readlength: {type: ['null', int], doc: "Read length of library aligned", default: 150}
+  new_reference_name: {type: string, doc: "Name to use for newly created star fusion archive"}
+```
+
+```yaml
+outputs:
+  star_fusion_reference:
+    type: File
+    outputBinding:
+      glob: '*.tgz'
+```
+
+#### Docker Pulls
+ - `trinityctat/starfusion:1.9.0`
+
+
 ## arriba v1.1.0
 Tool built to run [arriba fusion caller](https://github.com/suhrig/arriba).
 Tool used to run software `tools/arriba_fusion.cwl`.
