@@ -32,7 +32,7 @@ inputs:
   reference_fasta: {type: File, secondaryFiles: ['.fai', '^.dict']}
   bqsr_bam: {type: File, secondaryFiles: ['^.bai']}
   genes_bed: {type: File?}
-  dbsnp: {type: File, secondaryFiles: ['.idx'], doc: "dbSNP reference"}
+  dbsnp: {type: File, secondaryFiles: ['.tbi'], doc: "dbSNP reference, gzipped tab indexed"}
   output_basename: string
 outputs:
   hc_called_vcf:
